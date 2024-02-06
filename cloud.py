@@ -1,11 +1,16 @@
 import ee
 import streamlit as st
+import json
 
-service_account = st.secrets["ee_email"]
-service_key = st.secrets["ee_key"]
-credentials = ee.ServiceAccountCredentials(email = service_account, key_data = service_key)
+key_path = "Profiles\info.json"
+
+#Сгружаем даынные с JSON для аунтификации в GoogleCloud. Извлекаем client_email и private_key_id
+with open(key_path) as file:
+    file_json = json.load(file)
+    ee_email = file_json.get('client_email')
+
+credentials = ee.ServiceAccountCredentials(email=ee_email, key_file=key_path)
 ee.Initialize(credentials)
-
 
 # Soil depths [in cm] where we have data.
 olm_depths = [0, 10, 30, 60, 100, 200]

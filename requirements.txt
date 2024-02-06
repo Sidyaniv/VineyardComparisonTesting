@@ -8,3 +8,4 @@ streamlit==1.13.0
 streamlit_folium==0.6.15
 matplotlib==3.6.2
 altair<5
+pytest==8.0.0

@@ -8,8 +8,14 @@ import streamlit as st
 import matplotlib as mpl
 from matplotlib import pyplot as plt
 
-service_account = st.secrets["ee_email"]
-credentials = ee.ServiceAccountCredentials(email = service_account, key_data = st.secrets["ee_key"])
+key_path = "Profiles\info.json"
+
+#Сгружаем даынные с JSON для аунтификации в GoogleCloud. Извлекаем client_email и private_key_id
+with open(key_path) as file:
+    file_json = json.load(file)
+    ee_email = file_json.get('client_email')
+
+credentials = ee.ServiceAccountCredentials(email=ee_email, key_file=key_path)
 ee.Initialize(credentials)
 
 
