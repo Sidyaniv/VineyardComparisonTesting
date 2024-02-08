@@ -12,28 +12,33 @@ from configuration import get_data_conf as gdc
                                        (gdc['correct']['lat'][4], gdc['correct']['long'][4]),
                                       ])
 def test_map_create(lat, long):
-    """
-    Тесты связанные с функцией map_create.
-    Задаём корректные данные 
-    
-    """
+    """Тест проверяющий создание карты с помощью map_creater
+       Задаём корректные данные 
 
+    Args:
+        lat (float | int): географическая долгота (если float, то до 6 знаков после запятой)
+        long (float | int): географическая широта (если float, то до 6 знаков после запятой)
+    """
     map_with_data = map_creater([lat,long])
     map_without_data = map_creater(None)
     assert isinstance(map_with_data, folium.folium.Map) 
     assert isinstance(map_without_data, folium.folium.Map)
 
-@pytest.mark.parametrize("lat, long", [(gdc['uncorrect']['lat'][0], gdc['uncorrect']['long'][0]),
-                                       (gdc['uncorrect']['lat'][1], gdc['uncorrect']['long'][1]),
-                                       (gdc['uncorrect']['lat'][2], gdc['uncorrect']['long'][2]),
-                                       (gdc['uncorrect']['lat'][3], gdc['uncorrect']['long'][3]),
-                                       (gdc['uncorrect']['lat'][4], gdc['uncorrect']['long'][4]),
+@pytest.mark.parametrize("lat, long", [(gdc['incorrect']['lat'][0], gdc['incorrect']['long'][0]),
+                                       (gdc['incorrect']['lat'][1], gdc['incorrect']['long'][1]),
+                                       (gdc['incorrect']['lat'][2], gdc['incorrect']['long'][2]),
+                                       (gdc['incorrect']['lat'][3], gdc['incorrect']['long'][3]),
+                                       (gdc['incorrect']['lat'][4], gdc['incorrect']['long'][4]),
                                       ])
-def test_map_create_uncorrect(lat, long):
-    """
-    Тесты связанные с функцией map_create.
-    Задаём некорректные данные
+def test_map_create_incorrect(lat, long):
+    """Тест проверяющий создание карты с помощью map_creater.
+       Задаём некорректные данные
+
+    Args:
+        lat (float | int): географическая долгота (если float, то до 6 знаков после запятой)
+        long (float | int): географическая широта (если float, то до 6 знаков после запятой)
     """
 
     map_with_data = map_creater([lat,long])
     assert isinstance(map_with_data, folium.folium.Map) 
+  

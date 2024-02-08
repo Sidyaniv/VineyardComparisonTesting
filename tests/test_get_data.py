@@ -32,11 +32,11 @@ def test_positive_data_getting (param):
     validate(dataset_info, GET_SOIL_PROPERTIES_IMAGE_SCHEME)
 
 
-@pytest.mark.parametrize('param', [(gdc['uncorrect']['param'][0]),
-                                  (gdc['uncorrect']['param'][1]), 
-                                  (gdc['uncorrect']['param'][2]), 
-                                  (gdc['uncorrect']['param'][3]), 
-                                  (gdc['uncorrect']['param'][4])
+@pytest.mark.parametrize('param', [(gdc['incorrect']['param'][0]),
+                                  (gdc['incorrect']['param'][1]), 
+                                  (gdc['incorrect']['param'][2]), 
+                                  (gdc['incorrect']['param'][3]), 
+                                  (gdc['incorrect']['param'][4])
                                  ]
                         )
 def test_negative_data_getting (param):

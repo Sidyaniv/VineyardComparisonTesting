@@ -174,6 +174,9 @@ def get_location_temp(lat,long):
     )
     info = mean_dict.getInfo()
     mean = round(sum(info.values()), 2)
+    # возможно, надо исправить на :
+    # round(sum(info.values()) / len(info),2) для исключения ошибки, 
+    # если на вход придёт более одного элемента 
     return mean
 
 
@@ -188,7 +191,10 @@ def get_location_diurnal_range(long, lat):
         scale=30,
         maxPixels=1e9
     )
-    mean_diurnal_range = mean_dict.getInfo()
 
-    mean = round(sum(mean_diurnal_range.values()) / len(mean_diurnal_range),2)
+    mean_diurnal_range = mean_dict.getInfo()
+    try:
+        mean = round(sum(mean_diurnal_range.values()) / len(mean_diurnal_range),2)
+    except TypeError :
+        mean = "No info"
     return mean

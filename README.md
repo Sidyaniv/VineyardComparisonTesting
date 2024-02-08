@@ -1,5 +1,9 @@
-# Canadian Vineyard Site Selection
+# Тестирование проекта Canadian Vineyard Site Selection
 
+Репозиторий создан в рамках тестового задания на позицию тестировщика.
+В качестве кода для тестов выступил проект Canadian Vineyard Site Selection, взятый из репозитория: https://github.com/SpencerMartel/VineyardComparison.git
+
+README первоначального источника:
 This app is live at https://canadianvineyards.streamlit.app/
 
 This is the final project for my fall 2022 class GEOG466 - Geomedia and the Geoweb. The project was to create a web app that had an interactive map.
