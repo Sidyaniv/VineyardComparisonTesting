@@ -10,11 +10,13 @@ def main():
     # Config for website
     st.set_page_config(
         page_title= 'Vineyard Site Selection',
-        page_icon=":wine_glass:",
+        page_icon=":wine_glass:", 
         layout = "wide",
         initial_sidebar_state="expanded")
     with open('style.css') as f:
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+    # Добавил строчку для более удобного отображения
+    st.markdown('<meta name="viewport" content="width=device-width, initial-scale=1.25">', unsafe_allow_html=True)
     st.markdown('<script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>', unsafe_allow_html=True)
     
     st.markdown(
@@ -31,6 +33,7 @@ def main():
         )
     
     @st.cache
+    #?    Функция кэша. Streamlit хеширует функцию и зависимый код.
     def load_profiles():
         p = open('profiles.json')
         profiles = json.load(p)
@@ -350,6 +353,7 @@ def comparison(queried_profile, profiles):
                 location_dict = make_queried_json(location_soil_mean_df, elevation_result, clicked_lat, clicked_lng)
                 try:
                     closest_region_string, all_scores = comparison(location_dict, profiles)
+                    # all_score не используется
                 except TypeError:
                     st.subheader('No data for that location, make sure to click in Canada and not on a body of water.')
                     return
@@ -381,7 +385,6 @@ def comparison(queried_profile, profiles):
                 st.write("These metrics show the data for your selected location, the smaller numbers in red and green show the difference between the location's values and those of the most similar region.")
             except KeyError:
                 st.subheader('No data for that location, make sure to click in Canada and not on a body of water.')
-
 def map_creater(marker_location):
     my_map = folium.Map(location=(57.70414723434193, -108.28125000000001), zoom_start = 3, max_bounds=[[-180, -90], [180, 90]], tiles= "openstreetmap")
     if marker_location != None:

@@ -10,7 +10,7 @@ from matplotlib import pyplot as plt
 
 key_path = "Profiles\info.json"
 
-#Сгружаем даынные с JSON для аунтификации в GoogleCloud. Извлекаем client_email и private_key_id
+#? Сгружаем даынные с JSON для аунтификации в GoogleCloud. Извлекаем client_email 
 with open(key_path) as file:
     file_json = json.load(file)
     ee_email = file_json.get('client_email')
@@ -20,6 +20,7 @@ ee.Initialize(credentials)
 
 
 def queried_df (sand_profile, clay_profile, orgc_profile):
+    
     data = [sand_profile,clay_profile, orgc_profile]
     df = pandas.DataFrame(data=data)
     df.index = ['Sand', 'Clay', 'Organic Matter']
@@ -28,7 +29,7 @@ def queried_df (sand_profile, clay_profile, orgc_profile):
     return df
 
 def calculate_soil_mean(dataframe):
-
+#? Выведет таблицу 2х3 со столбцом mean и строками sand_mean, clay_mean, org_mean, other
     sand_mean = round(dataframe['Sand'].mean(), 3)
     clay_mean = round(dataframe['Clay'].mean(), 3)
     org_mean = round(dataframe['Organic Matter'].mean(), 3)
@@ -39,6 +40,8 @@ def calculate_soil_mean(dataframe):
     return df
     
 def piechart(dataframe):
+    #? Функция plotly.express, создающая круговую диаграмму 
+    # ! Нигде не используется
     df = calculate_soil_mean(dataframe)
 
     fig = px.pie(df, values=df['Mean'], names = df.index, hover_name=df.index)
@@ -47,6 +50,7 @@ def piechart(dataframe):
 
 
 def get_elevation(lat,long):
+    #? используется библиотека запросов, чтобы получить данные о средней высоте
     url = f'http://geogratis.gc.ca/services/elevation/cdem/altitude?lat={lat}&lon={long}'
     result = requests.get(url)
     dict = json.loads(result.text)
@@ -62,6 +66,7 @@ def make_profile_card(region_dict):
     diurnal_range = region_dict['properties']['avg_diurnal_range']
 
     # Write em to screen, no need to return st.container() writes already
+
     with st.container():
         st.write('#')
         st.markdown(f'<div style="text-align: center;font-weight: bold;font-size: 22px;">{region}, {country}</div>', unsafe_allow_html=True)
@@ -77,7 +82,7 @@ def make_profile_card(region_dict):
 
 
 def make_card_chart (region_dict):
-    
+    #? Создаёт таблицу с данными о регионе 
     df = pandas.DataFrame(data = [region_dict["properties"]["mean_soil_content_%"]], index = ["Mean"])
     df.columns = df.columns.str.capitalize()
     df = df.T
@@ -85,7 +90,7 @@ def make_card_chart (region_dict):
     return df
 
 def comparison(queried_profile, profiles):
-
+    #? Определение самого схожего профиля с сравниваемым
     comparative_profiles = make_profile_comparative_json(profiles)
     closest_profile = ''
     lowest_score = 1000000
@@ -105,7 +110,7 @@ def comparison(queried_profile, profiles):
         if score < lowest_score:
             lowest_score = score
             closest_profile = comparative_region["region"]
-
+    #? записываем все профили, с которыми необходимо сравнить, и их очки в список словарей 
         comparative_dict = {"region": comparative_region["region"], "score": score}
         list_of_dicts.append(comparative_dict)
 
@@ -135,7 +140,7 @@ def make_profile_comparative_json(profiles):
     """
     returns a list of dicts from the pre-made profiles containing only the data we want to compare to the queried location
     """
-    
+    # ?возвращает список словарей из предварительно созданных профилей, содержащих только данные, которые мы хотим сравнить с запрашиваемым местоположением
     list_of_dicts = []
     for region in profiles["profiles"]:
         location_dict = {
@@ -162,7 +167,7 @@ def get_location_temp(lat,long):
     dataset = image.select("bio01")
     
     mean_dict = dataset.reduceRegion(
-        reducer=ee.Reducer.mean(),
+        reducer=ee.Reducer.mean(), #? Среднее значение
         geometry=point,
         scale=30,
         maxPixels=1,

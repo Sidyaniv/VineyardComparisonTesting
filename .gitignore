@@ -3,6 +3,7 @@ __pycache__
 .vscode
 tempCodeRunnerFile.py
 Profiles/info.json
+Diagrams
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

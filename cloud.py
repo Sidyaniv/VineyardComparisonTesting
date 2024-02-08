@@ -52,13 +52,14 @@ def get_data(param):
     else:
         return print("error")
     
+    # !
     countries = ee.FeatureCollection("FAO/GAUL/2015/level0")
     canada = countries.filter(ee.Filter.eq('ADM0_CODE', 46))
+    # !
 
     # Apply the scale factor to the ee.Image.
     dataset = ee.Image(snippet)
     dataset = dataset.multiply(scale_factor)
-
 
     return dataset
 
