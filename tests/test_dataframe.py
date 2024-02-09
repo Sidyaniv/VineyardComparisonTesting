@@ -4,9 +4,9 @@ import ee
 from data_analysis import queried_df, calculate_soil_mean
 from cloud import local_profile
 from src.schemas.get import GET_SOIL_PROPERTIES_IMAGE_SCHEME
-
 from configuration import get_data_conf as gdc
-from src.enums.global_enums import GlobalErrorMessage
+from src.baseclasses.responce import GetData
+
 
 @pytest.mark.parametrize('long, lat', [
                                         (gdc['correct']['long1'][0], gdc['correct']['lat1'][0]),
@@ -77,6 +77,7 @@ def test_incorrect_output_data(get_data_soil_dict, long, lat):
         with pytest.raises(ee.ee_exception.EEException):
             test_correct_output_data(get_data_soil_dict, long, lat)
 
+
 @pytest.mark.parametrize('long, lat', [
                                         (gdc['correct']['long1'][0], gdc['correct']['lat1'][0]),
                                         (gdc['correct']['long1'][1], gdc['correct']['lat1'][1]),
@@ -103,7 +104,9 @@ def test_calculating_soil_mean(get_data_soil_dict, long, lat):
         lat (_type_): _description_
     """
     df = test_correct_output_data(get_data_soil_dict, long, lat)
-    calculate_soil_mean(df)
-    df_str = str(type(df))
-    assert df_str == "<class 'pandas.core.frame.DataFrame'>"
-# Несмотря на правильные входные данные, функция calculate_soil_mean обрабатывает их с ошибкой: KeyError
+    dataframe = calculate_soil_mean(df.T)
+    dataframe_class = GetData(dataframe)
+    type_obj = "<class 'pandas.core.frame.DataFrame'>"
+    dataframe_class.asssert_equal(type_obj)
+
+

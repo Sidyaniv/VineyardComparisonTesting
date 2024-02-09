@@ -7,6 +7,7 @@ from src.enums.global_enums import GlobalErrorMessage
 from data_analysis import make_profile_comparative_json, get_location_temp, get_location_diurnal_range
 from cloud import get_data, local_profile
 from configuration import get_data_conf as gdc
+from src.baseclasses.responce import GetData
 
 def test_make_profile_json(make_profile_json):
     """Тест на валидность данных, полученных из функции make_profile_comparative_json
@@ -16,11 +17,10 @@ def test_make_profile_json(make_profile_json):
     """
 
     profiles = make_profile_comparative_json(make_profile_json)
-    for region in profiles:
-        validate(region, PROFILE_JSON_SCHEME)
+    profiles_class = GetData(profiles)
+    profiles_class.validate(PROFILE_JSON_SCHEME)
 
-# def test_comparison():
-#     pass
+
 @pytest.mark.parametrize("param, lat, long", [
                                               (gdc['correct']['param'][0], gdc['correct']['lat1'][1], gdc['correct']['long1'][1]),
                                               (gdc['correct']['param'][1], gdc['correct']['lat1'][2], gdc['correct']['long1'][2]),
@@ -59,10 +59,12 @@ def test_local_profile(param, lat, long):
     poi = (long, lat)
     buffer = 1000
     profile = local_profile(dataset=dataset, poi=poi, buffer=buffer)
+    profile_class = GetData(profile)
+
     if profile == 'No data :(':
         assert True
     else:    
-        assert isinstance(profile, dict)
+        profile_class.assert_isinstance(dict)
 
 
 @pytest.mark.parametrize("lat, long", [(gdc['correct']['lat1'][0], gdc['correct']['long1'][0]),
@@ -84,14 +86,18 @@ def test_get_location_correct_data(lat, long):
         lat (float | int): географическая долгота (если float, то до 6 знаков после запятой)
         long (float | int): географическая широта (если float, то до 6 знаков после запятой)
     """
+    
     temp = get_location_temp(lat, long)
-    assert isinstance(temp,  (int, float) ), GlobalErrorMessage.GET_DATA_ERROR_MESSAGE
+    temp_class = GetData(temp)
+    temp_class.assert_isinstance((int, float))
 
     range = get_location_diurnal_range(lat, long)
+    range_class = GetData(range)
+
     try:
-        assert isinstance(range,  (int, float) ), GlobalErrorMessage.GET_DATA_ERROR_MESSAGE
+        range_class.assert_isinstance((int, float))
     except AssertionError:
-        assert isinstance(range, str), GlobalErrorMessage.GET_DATA_ERROR_MESSAGE
+        range_class.assert_isinstance(str)
 
 
 @pytest.mark.parametrize("lat, long", [(gdc['incorrect']['lat1'][0], gdc['incorrect']['long1'][0]),
@@ -100,7 +106,40 @@ def test_get_location_correct_data(lat, long):
                                        (gdc['incorrect']['lat1'][3], gdc['incorrect']['long1'][3]),
                                        (gdc['incorrect']['lat1'][4], gdc['incorrect']['long1'][4])
                                       ])
-def test_get_location_incorrect_data(lat, long):
+def test_get_location_incorrect_data_range(lat, long):
+    """Тест обратботки данных полученных некорректно (вне зоны покрытия EarthEngine)
+    
+    Args:
+        lat (float | int): географическая долгота (если float, то до 6 знаков после запятой)
+        long (float | int): географическая широта (если float, то до 6 знаков после запятой)
+    """
+    
+    if lat is not None and long is not None:
+        with pytest.raises(ee.ee_exception.EEException):
+            range = get_location_diurnal_range(lat, long)
+            range_class = GetData(range)
+            try:
+                range_class.assert_isinstance((int, float))
+            except AssertionError:
+                range_class.assert_isinstance(str)
+    else:
+        with pytest.raises(KeyError):
+            range = get_location_diurnal_range(lat, long)
+            range_class = GetData(range)
+
+            try:
+                range_class.assert_isinstance((int, float))
+            except AssertionError:
+                range_class.assert_isinstance(str)
+   
+
+@pytest.mark.parametrize("lat, long", [(gdc['incorrect']['lat1'][0], gdc['incorrect']['long1'][0]),
+                                       (gdc['incorrect']['lat1'][1], gdc['incorrect']['long1'][1]),
+                                       (gdc['incorrect']['lat1'][2], gdc['incorrect']['long1'][2]),
+                                       (gdc['incorrect']['lat1'][3], gdc['incorrect']['long1'][3]),
+                                       (gdc['incorrect']['lat1'][4], gdc['incorrect']['long1'][4])
+                                      ])
+def test_get_location_incorrect_data_temp(lat, long):
     """Тест обратботки данных полученных некорректно (вне зоны покрытия EarthEngine)
     
     Args:
@@ -111,18 +150,6 @@ def test_get_location_incorrect_data(lat, long):
     if lat is not None and long is not None:
         with pytest.raises(ee.ee_exception.EEException):
             get_location_temp(lat, long)
-            range = get_location_diurnal_range(lat, long)
-            try:
-                assert isinstance(range,  (int, float) ), GlobalErrorMessage.GET_DATA_ERROR_MESSAGE
-            except AssertionError:
-                assert isinstance(range, str), GlobalErrorMessage.GET_DATA_ERROR_MESSAGE
     else:
         with pytest.raises(KeyError):
             get_location_temp(lat, long)
-            range = get_location_diurnal_range(lat, long)
-            try:
-                assert isinstance(range,  (int, float) ), GlobalErrorMessage.GET_DATA_ERROR_MESSAGE
-            except AssertionError:
-                assert isinstance(range, str), GlobalErrorMessage.GET_DATA_ERROR_MESSAGE
-   
-

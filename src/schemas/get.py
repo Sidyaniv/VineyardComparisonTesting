@@ -7,3 +7,10 @@ GET_SOIL_PROPERTIES_IMAGE_SCHEME = {
     }
 }  
 
+GET_ELEVATION_SCHEME = {
+    'type': 'object',
+    'properties': {
+        'altitude':{'type': 'number'}
+    },
+    'required': ['altitude']    
+}
