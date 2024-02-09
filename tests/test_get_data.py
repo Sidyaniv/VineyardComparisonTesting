@@ -55,7 +55,5 @@ def test_negative_data_getting (param):
 
 
 
-# Проверка правильности создания карты функция map_creater
-
 # Проверка функции get_elevation на валидность, наличие данных 
 
